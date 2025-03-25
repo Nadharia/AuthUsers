@@ -1,11 +1,11 @@
 package com.example.AuthUsers.Security;
 
 
-import com.example.AuthUsers.jwt.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.AuthUsers.jwt.JwtFilter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,8 +22,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetails customUserDetails;
+
+    private final JwtFilter jwtFilter;
+
+    public SecurityConfig(JwtFilter jwtFilter){
+
+        this.jwtFilter=jwtFilter;
+    }
 
 
 
@@ -32,12 +37,27 @@ public class SecurityConfig {
         http
 
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize->authorize
+                .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/").permitAll()
                         .anyRequest().authenticated()
                 )
+                .formLogin(login->login
+                        .loginProcessingUrl("/auth/login")
+                        .defaultSuccessUrl("home",true)
+                        .permitAll()
+                )
+                .logout(logout->logout
+                        .logoutUrl("/auth/logout")
+                        .logoutSuccessUrl("/auth/login")
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
 
-                .rememberMe(Customizer.withDefaults());
+                )
+                .sessionManagement(session -> session
+                        .sessionFixation().migrateSession()
+                )
+
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -47,14 +67,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    UserDetailsService userDetailsService(){
-        UserDetails userDetails=User.builder()
-                .username("user")
-                .password(passwordEncoder().encode("password"))
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(userDetails);
-    }
 }
