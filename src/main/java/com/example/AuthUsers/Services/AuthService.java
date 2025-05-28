@@ -12,13 +12,19 @@ import org.springframework.stereotype.Service;
 
 
 
-@RequiredArgsConstructor
+
 @Service
 public class AuthService {
 
     private final AlumnoRepository alumnoRepository;
     private final SeccionService seccionService;
     private final PasswordEncoder passwordEncoder;
+
+    public AuthService(AlumnoRepository alumnoRepository, SeccionService seccionService, PasswordEncoder passwordEncoder) {
+        this.alumnoRepository = alumnoRepository;
+        this.seccionService = seccionService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public ResponseEntity<String> login(LoginDTO loginDTO, HttpServletRequest request){
         return alumnoRepository.findByUsername(loginDTO.getUsername())

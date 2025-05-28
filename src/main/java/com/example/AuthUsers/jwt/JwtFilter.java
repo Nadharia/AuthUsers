@@ -22,7 +22,7 @@ import java.util.Collections;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private static final SecretKey secretKey = Keys.hmacShaKeyFor("mi_clave_secreta".getBytes());
+    private static final SecretKey secretKey = Keys.hmacShaKeyFor("una_clave_secreta_que_tiene_al_menos_256_bits_de_largo".getBytes());
 
     @Autowired
     private JwtUtil jwtUtil;

@@ -2,7 +2,9 @@ package com.example.AuthUsers.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
 
 import javax.crypto.SecretKey;
@@ -11,9 +13,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+@Component
 public class JwtUtil {
 
-    private static final Key secretkey = Keys.hmacShaKeyFor("mi_clave_secreta".getBytes());
+    private static final Key secretkey = Keys.hmacShaKeyFor("una_clave_secreta_que_tiene_al_menos_256_bits_de_largo".getBytes());
     Date expirationDate = new Date(System.currentTimeMillis() + 36000000);
 
     public String generarToken(String username, List<String> roles) {

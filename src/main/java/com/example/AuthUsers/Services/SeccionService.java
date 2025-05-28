@@ -12,10 +12,10 @@ public class SeccionService {
 
     public ResponseEntity<String> checkSeccion(HttpServletRequest request){
         if (request.getSession(false)!= null) {
-            log.info("Usuario autenticado");
+            System.out.println("Usuario autenticado");
             return ResponseEntity.ok("Usuario autenticado");
         }else{
-            log.warn("Intento de acceso sin sesión activa");
+            System.out.println("Intento de acceso sin sesión activa");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No autorizado");
         }
     }
@@ -27,10 +27,10 @@ public class SeccionService {
 
     public ResponseEntity<String> createSeccion(HttpServletRequest request){
         if (request.getSession(false)!=null) {
-            log.info("seccion creada:createSeccion");
+            System.out.println("seccion creada:createSeccion");
             return ResponseEntity.ok("Seccion creada");
         }else{
-            log.warn("Problemas al crear seccion:createSeccion");
+            System.out.println("Problemas al crear seccion:createSeccion");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Seccion no creada");
         }
 
